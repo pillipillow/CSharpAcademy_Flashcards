@@ -8,6 +8,7 @@ namespace Flashcards
         Helpers helpers = new Helpers();
 
         List<Stack> stacks = new List<Stack>();
+        List<FlashcardDto> flashcards = new List<FlashcardDto>();
 
         internal void MainMenu()
         { 
@@ -45,6 +46,7 @@ namespace Flashcards
                     case "4":
                         break;
                     case "5":
+                        DeleteFlashcards();
                         break;
                     case "6":
                         break;
@@ -132,7 +134,42 @@ namespace Flashcards
             Console.ReadLine();
         }
 
-        private void GetStacks()
+        private void DeleteFlashcards()
+        {
+            Console.Clear();
+            Console.WriteLine("---Delete flashcards---");
+            
+            GetFlashcards();
+            if (flashcards.Count > 0)
+            {
+                Console.WriteLine("\nEnter the flashcard id to delete: ");
+                int flashcardDisplayId = helpers.CheckIntInput();
+
+                var flashcard = flashcards.FirstOrDefault(f => f.DisplayId == flashcardDisplayId);
+
+                if (flashcard == null)
+                    Console.WriteLine($"Flashcard with ID '{flashcardDisplayId}' does not exist. Please try again.");
+                else
+                {
+                    Console.WriteLine($"Are you sure you want to delete flashcard with ID '{flashcardDisplayId}'? (y/n): ");
+                    string confirmation = Console.ReadLine();
+
+                    if (confirmation.Trim().ToLower() == "y")
+                    {
+                        databaseManager.DeleteFlashcard(flashcard.Id);
+                        Console.WriteLine($"\nFlashcard with ID '{flashcardDisplayId}' deleted successfully!");
+                    }
+                    else
+                        Console.WriteLine("\nDeletion cancelled.");
+
+                }
+            }
+
+
+            Console.WriteLine("\nPress Enter to return to the main menu...");
+            Console.ReadLine();
+        }
+
         private int GetStacks()
         { 
             stacks.Clear();
@@ -168,7 +205,9 @@ namespace Flashcards
                     Console.WriteLine($"Stack '{stackName}' does not exist. Please try again.");
                 else
                 {
-                    var flashcards = databaseManager.GetFlashcardsByStackId(stack.Id);
+                    flashcards.Clear();
+                    flashcards = databaseManager.GetFlashcardsByStackId(stack.Id);
+
                     Console.WriteLine();
                     if (flashcards.Count == 0)
                     {

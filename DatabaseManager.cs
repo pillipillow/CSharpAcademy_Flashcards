@@ -97,10 +97,22 @@ namespace Flashcards
         {
             using (var connection = new SqlConnection(GetConnectionString()))
             {
-                var sql = @"SELECT ROW_NUMBER() OVER (ORDER BY Id ASC) AS DisplayId, 
-                            Question, Answer FROM Flashcards WHERE StackId = @StackId";
+                var sql = @"SELECT Id, 
+                                   ROW_NUMBER() OVER (ORDER BY Id ASC) AS DisplayId, 
+                                   Question, 
+                                   Answer 
+                            FROM Flashcards WHERE StackId = @StackId";
 
                 return connection.Query<FlashcardDto>(sql, new { StackId = stackId }).ToList();
+            }
+        }
+
+        internal void DeleteFlashcard(int flashcardId)
+        {
+            using (var connection = new SqlConnection(GetConnectionString()))
+            {
+                var sql = "DELETE FROM Flashcards WHERE Id = @Id";
+                connection.Execute(sql, new { Id = flashcardId });
             }
         }
 
