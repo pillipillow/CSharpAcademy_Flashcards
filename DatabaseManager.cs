@@ -52,8 +52,7 @@ namespace Flashcards
                                     StackId INT NOT NULL,
                                     Question NVARCHAR(MAX) NOT NULL,
                                     Answer NVARCHAR(MAX) NOT NULL,
-                                    CONSTRAINT FK_Flashcards_Stacks FOREIGN KEY (StackId) 
-                                        REFERENCES Stacks(Id) ON DELETE CASCADE
+                                    FOREIGN KEY (StackId) REFERENCES Stacks(Id) ON DELETE CASCADE
                                 );
                             END";
 
@@ -61,20 +60,27 @@ namespace Flashcards
             }
         }
 
-        internal bool CreateStack(string stackName)
+        internal void CreateStack(string stackName)
         {
-            try
+            using (var connection = new SqlConnection(GetConnectionString()))
             {
-                using (var connection = new SqlConnection(GetConnectionString()))
-                {
-                    var sql = "INSERT INTO Stacks (Name) VALUES (@Name)";
-                    connection.Execute(sql, new { Name = stackName });
-                    return true;
-                }
+                var sql = "INSERT INTO Stacks (Name) VALUES (@Name)";
+
+                connection.Execute(sql, new { Name = stackName });
             }
-            catch (SqlException ex) 
+        }
+
+        internal bool CheckStactExist(string stackname)
+        {
+            using (var connection = new SqlConnection(GetConnectionString()))
             {
-                return false;
+                string sql = "SELECT COUNT(1) FROM Stacks WHERE Name = @Name";
+
+                int count = connection.ExecuteScalar<int>(sql, new { Name = stackname });
+                return count > 0;
+            }
+        }
+            {
             }
         }
 

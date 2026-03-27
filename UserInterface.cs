@@ -50,11 +50,13 @@
         
         }
 
-        internal void CreateStack()
+
+        private void CreateStack()
         {
             Console.Clear();
             Console.WriteLine("---Create a new Stack---");
-            Console.Write("Enter the name of the new stack: ");
+
+            Console.Write("Enter the name of the new stack (Press 0 to return to the main menu): ");
             string name = Console.ReadLine();
 
             if (name == "0") return;
@@ -65,12 +67,14 @@
                 Console.WriteLine("Stack name cannot be empty. Please try again.");
             }
             else
-            { 
-                bool isSuccess = databaseManager.CreateStack(name);
-                if(isSuccess)
-                    Console.WriteLine($"Stack '{name}' created successfully!");
+            {
+                if (databaseManager.CheckStactExist(name))
+                    Console.WriteLine($"Stack '{name}' already exists. Please choose a different name.");
                 else
-                    Console.WriteLine($"Stack '{name}' already exist.");
+                {
+                    databaseManager.CreateStack(name);
+                    Console.WriteLine($"Stack '{name}' created successfully!");
+                }
             }
 
             Console.WriteLine("Press Enter to return to the main menu...");
