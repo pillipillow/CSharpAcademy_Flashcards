@@ -61,41 +61,9 @@ namespace Flashcards
         {
             Console.Clear();
             Console.WriteLine("---View flashcards---");
-            GetStacks();
-            if (stacks.Count == 0)
-            {
-                Console.WriteLine("No stacks found. Please create a stack first.");
-            }
-            else
-            {
-                Console.WriteLine("\nEnter the stack ID to view flashcards (Press 0 to return to the main menu):");
-                string stackName = Console.ReadLine();
 
-                if (stackName == "0") return;
+            GetFlashcards();
 
-                var stack = stacks.FirstOrDefault(s => s.Name.Equals(stackName, StringComparison.OrdinalIgnoreCase));
-
-                if (stack == null)
-                    Console.WriteLine($"Stack '{stackName}' does not exist. Please try again.");
-                else
-                {
-                    var flashcards = databaseManager.GetFlashcardsByStackId(stack.Id);
-                    Console.WriteLine();
-                    if (flashcards.Count == 0)
-                    {
-                        Console.WriteLine("No flashcards found in this stack.");
-                    }
-                    else
-                    {
-                        Console.WriteLine(string.Format("{0,-7} {1,-15} {2,-15}", "ID", "Question", "Answer"));
-                        foreach (var flashcard in flashcards)
-                        {
-                            Console.WriteLine(string.Format("{0,-7} {1,-15} {2,-15}", flashcard.DisplayId, flashcard.Question, flashcard.Answer));
-                            
-                        }
-                    }
-                }
-            }
             Console.WriteLine("\nPress Enter to return to the main menu...");
             Console.ReadLine();
         }
@@ -134,13 +102,8 @@ namespace Flashcards
         {
             Console.Clear();
             Console.WriteLine("---Create flashcards---");
-            GetStacks();
 
-            if (stacks.Count == 0)
-            {
-                Console.WriteLine("No stacks found. Please create a stack first.");
-            }
-            else
+            if (GetStacks() > 0)
             {
                 Console.WriteLine("\nEnter the stack name to start creating a flashcard (Press 0 to return to the main menu):");
                 string stackName = Console.ReadLine();
@@ -155,13 +118,13 @@ namespace Flashcards
                 }
                 else
                 {
-                    Console.WriteLine("Enter the question for the flashcard: ");
+                    Console.WriteLine("\nEnter the question for the flashcard: ");
                     string question = Console.ReadLine();
-                    Console.WriteLine("Enter the answer for the flashcard: ");
+                    Console.WriteLine("\nEnter the answer for the flashcard: ");
                     string answer = Console.ReadLine();
 
                     databaseManager.CreateFlashcard(stack.Id, question, answer);
-                    Console.WriteLine("Flashcard created successfully!");
+                    Console.WriteLine("\nFlashcard created successfully!");
                 }
             }
 
@@ -170,13 +133,57 @@ namespace Flashcards
         }
 
         private void GetStacks()
+        private int GetStacks()
         { 
             stacks.Clear();
             stacks = databaseManager.GetStacks();
 
-            foreach (var stack in stacks)
+            if (stacks.Count == 0)
             {
-                Console.WriteLine($"- {stack.Name}");
+                Console.WriteLine("No stacks found. Please create a stack first.");
+            }
+            else
+            {
+                foreach (var stack in stacks)
+                {
+                    Console.WriteLine($"- {stack.Name}");
+                }
+            }
+
+            return stacks.Count;
+        }
+
+        private void GetFlashcards()
+        {
+            if (GetStacks() > 0)
+            {
+                Console.WriteLine("\nEnter the stack ID to view flashcards (Press 0 to return to the main menu):");
+                string stackName = Console.ReadLine();
+
+                if (stackName == "0") return;
+
+                var stack = stacks.FirstOrDefault(s => s.Name.Equals(stackName, StringComparison.OrdinalIgnoreCase));
+
+                if (stack == null)
+                    Console.WriteLine($"Stack '{stackName}' does not exist. Please try again.");
+                else
+                {
+                    var flashcards = databaseManager.GetFlashcardsByStackId(stack.Id);
+                    Console.WriteLine();
+                    if (flashcards.Count == 0)
+                    {
+                        Console.WriteLine("No flashcards found in this stack.");
+                    }
+                    else
+                    {
+                        Console.WriteLine(string.Format("{0,-7} {1,-15} {2,-15}", "ID", "Question", "Answer"));
+                        foreach (var flashcard in flashcards)
+                        {
+                            Console.WriteLine(string.Format("{0,-7} {1,-15} {2,-15}", flashcard.DisplayId, flashcard.Question, flashcard.Answer));
+
+                        }
+                    }
+                }
             }
         }
     }
