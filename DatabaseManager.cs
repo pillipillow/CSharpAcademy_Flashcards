@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
+using Flashcards.Models;
 
 namespace Flashcards
 {
@@ -80,9 +81,18 @@ namespace Flashcards
                 return count > 0;
             }
         }
+
+        internal List<Stack> GetStacks()
+        {
+            using (var connection = new SqlConnection(GetConnectionString()))
             {
+                var sql = "SELECT * FROM Stacks ORDER BY Id ASC";
+
+                return connection.Query<Stack>(sql).ToList();
             }
+
         }
+
 
     }
 }

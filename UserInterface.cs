@@ -1,8 +1,12 @@
-﻿namespace Flashcards
+﻿using Flashcards.Models;
+using System.Xml.Linq;
+
+namespace Flashcards
 {
     internal class UserInterface
     {
         DatabaseManager databaseManager = new DatabaseManager();
+        List<Stack> stacks = new List<Stack>();
 
         internal void MainMenu()
         { 
@@ -34,6 +38,7 @@
                         CreateStack();
                         break;
                     case "3":
+                        CreateFlashcards();
                         break;
                     case "4":
                         break;
@@ -56,7 +61,7 @@
             Console.Clear();
             Console.WriteLine("---Create a new Stack---");
 
-            Console.Write("Enter the name of the new stack (Press 0 to return to the main menu): ");
+            Console.WriteLine("Enter the name of the new stack (Press 0 to return to the main menu): ");
             string name = Console.ReadLine();
 
             if (name == "0") return;
@@ -79,6 +84,40 @@
 
             Console.WriteLine("Press Enter to return to the main menu...");
             Console.ReadLine();
+        }
+
+        private void CreateFlashcards()
+        {
+            Console.Clear();
+            Console.WriteLine("---Create flashcards---");
+            GetStacks();
+
+            if (stacks.Count == 0)
+            {
+                Console.WriteLine("No stacks found. Please create a stack first.");
+            }
+            else
+            {
+                Console.WriteLine("\nEnter the stack ID to start creating a flashcard (Press 0 to return to the main menu):");
+                string input = Console.ReadLine();
+
+                if (input == "0") return;
+            }
+
+            Console.WriteLine("\nPress Enter to return to the main menu...");
+            Console.ReadLine();
+        }
+
+        private void GetStacks()
+        { 
+            stacks.Clear();
+            stacks = databaseManager.GetStacks();
+
+            foreach (var stack in stacks)
+            {
+                Console.WriteLine($"{stack.Id}: {stack.Name}");
+            }
+
         }
     }
 }
