@@ -99,13 +99,17 @@ namespace Flashcards
             }
             else
             {
-                Console.WriteLine("\nEnter the stack ID to start creating a flashcard (Press 0 to return to the main menu):");
-                int stackId = helpers.CheckIntInput();
+                Console.WriteLine("\nEnter the stack name to start creating a flashcard (Press 0 to return to the main menu):");
+                string stackName = Console.ReadLine();
 
-                if (stackId == 0) return;
+                if (stackName == "0") return;
 
-                if (!databaseManager.CheckStackExist(stackId))
-                    Console.WriteLine($"Stack with ID {stackId} does not exist. Please try again.");
+                var stack = stacks.FirstOrDefault(s => s.Name.Equals(stackName, StringComparison.OrdinalIgnoreCase));
+
+                if (stack == null)
+                {
+                    Console.WriteLine($"Stack '{stackName}' does not exist. Please try again.");
+                }
                 else
                 {
                     Console.WriteLine("Enter the question for the flashcard: ");
@@ -113,7 +117,7 @@ namespace Flashcards
                     Console.WriteLine("Enter the answer for the flashcard: ");
                     string answer = Console.ReadLine();
 
-                    databaseManager.CreateFlashcard(stackId, question, answer);
+                    databaseManager.CreateFlashcard(stack.Id, question, answer);
                     Console.WriteLine("Flashcard created successfully!");
                 }
             }
@@ -129,9 +133,8 @@ namespace Flashcards
 
             foreach (var stack in stacks)
             {
-                Console.WriteLine($"{stack.Id}: {stack.Name}");
+                Console.WriteLine($"- {stack.Name}");
             }
-
         }
     }
 }
