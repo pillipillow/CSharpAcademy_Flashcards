@@ -2,6 +2,8 @@
 {
     internal class UserInterface
     {
+        DatabaseManager databaseManager = new DatabaseManager();
+
         internal void MainMenu()
         { 
             bool isCloseApp = false;
@@ -29,6 +31,7 @@
                     case "1":
                         break;
                     case "2":
+                        CreateStack();
                         break;
                     case "3":
                         break;
@@ -45,6 +48,33 @@
                 }
             }
         
+        }
+
+        internal void CreateStack()
+        {
+            Console.Clear();
+            Console.WriteLine("---Create a new Stack---");
+            Console.Write("Enter the name of the new stack: ");
+            string name = Console.ReadLine();
+
+            if (name == "0") return;
+
+            Console.WriteLine();
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                Console.WriteLine("Stack name cannot be empty. Please try again.");
+            }
+            else
+            { 
+                bool isSuccess = databaseManager.CreateStack(name);
+                if(isSuccess)
+                    Console.WriteLine($"Stack '{name}' created successfully!");
+                else
+                    Console.WriteLine($"Stack '{name}' already exist.");
+            }
+
+            Console.WriteLine("Press Enter to return to the main menu...");
+            Console.ReadLine();
         }
     }
 }

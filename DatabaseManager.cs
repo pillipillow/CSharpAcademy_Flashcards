@@ -41,7 +41,7 @@ namespace Flashcards
                             BEGIN
                                 CREATE TABLE Stacks (
                                     Id INT PRIMARY KEY IDENTITY(1,1),
-                                    Name NVARCHAR(255) NOT NULL
+                                    Name NVARCHAR(255) UNIQUE NOT NULL
                                 );
                             END
                             
@@ -58,6 +58,23 @@ namespace Flashcards
                             END";
 
                 connection.Execute(sql);
+            }
+        }
+
+        internal bool CreateStack(string stackName)
+        {
+            try
+            {
+                using (var connection = new SqlConnection(GetConnectionString()))
+                {
+                    var sql = "INSERT INTO Stacks (Name) VALUES (@Name)";
+                    connection.Execute(sql, new { Name = stackName });
+                    return true;
+                }
+            }
+            catch (SqlException ex) 
+            {
+                return false;
             }
         }
 
