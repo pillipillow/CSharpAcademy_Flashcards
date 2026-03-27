@@ -34,6 +34,7 @@ namespace Flashcards
                         isCloseApp = true;
                         break;
                     case "1":
+                        ViewFlashcards();
                         break;
                     case "2":
                         CreateStack();
@@ -56,6 +57,48 @@ namespace Flashcards
         
         }
 
+        private void ViewFlashcards()
+        {
+            Console.Clear();
+            Console.WriteLine("---View flashcards---");
+            GetStacks();
+            if (stacks.Count == 0)
+            {
+                Console.WriteLine("No stacks found. Please create a stack first.");
+            }
+            else
+            {
+                Console.WriteLine("\nEnter the stack ID to view flashcards (Press 0 to return to the main menu):");
+                string stackName = Console.ReadLine();
+
+                if (stackName == "0") return;
+
+                var stack = stacks.FirstOrDefault(s => s.Name.Equals(stackName, StringComparison.OrdinalIgnoreCase));
+
+                if (stack == null)
+                    Console.WriteLine($"Stack '{stackName}' does not exist. Please try again.");
+                else
+                {
+                    var flashcards = databaseManager.GetFlashcardsByStackId(stack.Id);
+                    Console.WriteLine();
+                    if (flashcards.Count == 0)
+                    {
+                        Console.WriteLine("No flashcards found in this stack.");
+                    }
+                    else
+                    {
+                        Console.WriteLine(string.Format("{0,-7} {1,-15} {2,-15}", "ID", "Question", "Answer"));
+                        foreach (var flashcard in flashcards)
+                        {
+                            Console.WriteLine(string.Format("{0,-7} {1,-15} {2,-15}", flashcard.DisplayId, flashcard.Question, flashcard.Answer));
+                            
+                        }
+                    }
+                }
+            }
+            Console.WriteLine("\nPress Enter to return to the main menu...");
+            Console.ReadLine();
+        }
 
         private void CreateStack()
         {

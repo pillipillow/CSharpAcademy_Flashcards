@@ -71,17 +71,6 @@ namespace Flashcards
             }
         }
 
-        internal bool CheckStackExist(string stackname)
-        {
-            using (var connection = new SqlConnection(GetConnectionString()))
-            {
-                var sql = "SELECT COUNT(1) FROM Stacks WHERE Name = @Name";
-
-                int count = connection.ExecuteScalar<int>(sql, new { Name = stackname });
-                return count > 0;
-            }
-        }
-
         internal List<Stack> GetStacks()
         {
             using (var connection = new SqlConnection(GetConnectionString()))
@@ -102,6 +91,28 @@ namespace Flashcards
                 connection.Execute(sql, new { StackId = stackId, Question = question, Answer = answer });
             }
 
+        }
+
+        internal List<FlashcardDto> GetFlashcardsByStackId(int stackId)
+        {
+            using (var connection = new SqlConnection(GetConnectionString()))
+            {
+                var sql = @"SELECT ROW_NUMBER() OVER (ORDER BY Id ASC) AS DisplayId, 
+                            Question, Answer FROM Flashcards WHERE StackId = @StackId";
+
+                return connection.Query<FlashcardDto>(sql, new { StackId = stackId }).ToList();
+            }
+        }
+
+        internal bool CheckStackExist(string stackname)
+        {
+            using (var connection = new SqlConnection(GetConnectionString()))
+            {
+                var sql = "SELECT COUNT(1) FROM Stacks WHERE Name = @Name";
+
+                int count = connection.ExecuteScalar<int>(sql, new { Name = stackname });
+                return count > 0;
+            }
         }
 
         internal bool CheckStackExist(int id)
