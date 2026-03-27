@@ -71,11 +71,11 @@ namespace Flashcards
             }
         }
 
-        internal bool CheckStactExist(string stackname)
+        internal bool CheckStackExist(string stackname)
         {
             using (var connection = new SqlConnection(GetConnectionString()))
             {
-                string sql = "SELECT COUNT(1) FROM Stacks WHERE Name = @Name";
+                var sql = "SELECT COUNT(1) FROM Stacks WHERE Name = @Name";
 
                 int count = connection.ExecuteScalar<int>(sql, new { Name = stackname });
                 return count > 0;
@@ -93,6 +93,26 @@ namespace Flashcards
 
         }
 
+        internal void CreateFlashcard(int stackId, string question, string answer)
+        {
+            using (var connection = new SqlConnection(GetConnectionString()))
+            {
+                var sql = "INSERT INTO Flashcards (StackId, Question, Answer) VALUES (@StackId, @Question, @Answer)";
 
+                connection.Execute(sql, new { StackId = stackId, Question = question, Answer = answer });
+            }
+
+        }
+
+        internal bool CheckStackExist(int id)
+        {
+            using (var connection = new SqlConnection(GetConnectionString()))
+            { 
+                var sql = "SELECT COUNT(1) FROM Stacks WHERE Id = @Id";
+                
+                int count = connection.ExecuteScalar<int>(sql, new { Id = id });
+                return count > 0;
+            }
+        }
     }
 }

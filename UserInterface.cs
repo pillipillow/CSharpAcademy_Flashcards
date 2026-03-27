@@ -1,11 +1,12 @@
 ﻿using Flashcards.Models;
-using System.Xml.Linq;
 
 namespace Flashcards
 {
     internal class UserInterface
     {
         DatabaseManager databaseManager = new DatabaseManager();
+        Helpers helpers = new Helpers();
+
         List<Stack> stacks = new List<Stack>();
 
         internal void MainMenu()
@@ -73,7 +74,7 @@ namespace Flashcards
             }
             else
             {
-                if (databaseManager.CheckStactExist(name))
+                if (databaseManager.CheckStackExist(name))
                     Console.WriteLine($"Stack '{name}' already exists. Please choose a different name.");
                 else
                 {
@@ -99,9 +100,22 @@ namespace Flashcards
             else
             {
                 Console.WriteLine("\nEnter the stack ID to start creating a flashcard (Press 0 to return to the main menu):");
-                string input = Console.ReadLine();
+                int stackId = helpers.CheckIntInput();
 
-                if (input == "0") return;
+                if (stackId == 0) return;
+
+                if (!databaseManager.CheckStackExist(stackId))
+                    Console.WriteLine($"Stack with ID {stackId} does not exist. Please try again.");
+                else
+                {
+                    Console.WriteLine("Enter the question for the flashcard: ");
+                    string question = Console.ReadLine();
+                    Console.WriteLine("Enter the answer for the flashcard: ");
+                    string answer = Console.ReadLine();
+
+                    databaseManager.CreateFlashcard(stackId, question, answer);
+                    Console.WriteLine("Flashcard created successfully!");
+                }
             }
 
             Console.WriteLine("\nPress Enter to return to the main menu...");
