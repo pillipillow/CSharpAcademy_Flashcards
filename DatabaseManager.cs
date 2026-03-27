@@ -82,6 +82,15 @@ namespace Flashcards
 
         }
 
+        internal void DeleteStack(int stackId)
+        {
+            using (var connection = new SqlConnection(GetConnectionString()))
+            {
+                var sql = "DELETE FROM Stacks WHERE Id = @Id";
+                connection.Execute(sql, new { Id = stackId });
+            }
+        }
+
         internal void CreateFlashcard(int stackId, string question, string answer)
         {
             using (var connection = new SqlConnection(GetConnectionString()))

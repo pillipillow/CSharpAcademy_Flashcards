@@ -44,6 +44,7 @@ namespace Flashcards
                         CreateFlashcards();
                         break;
                     case "4":
+                        DeleteStack();
                         break;
                     case "5":
                         DeleteFlashcards();
@@ -134,6 +135,43 @@ namespace Flashcards
             Console.ReadLine();
         }
 
+        private void DeleteStack()
+        {
+            Console.Clear();
+            Console.WriteLine("---Delete Stacks---");
+
+            if (GetStacks() > 0)
+            {
+                Console.WriteLine("\nEnter the stack name to delete (Press 0 to return to the main menu):");
+                string stackName = Console.ReadLine();
+
+                if (stackName == "0") return;
+
+                var stack = stacks.FirstOrDefault(s => s.Name.Equals(stackName, StringComparison.OrdinalIgnoreCase));
+
+                if (stack == null)
+                { 
+                    Console.WriteLine("Stack '{stackName}' does not exist. Please try again.");
+                }
+                else
+                {
+                    Console.WriteLine($"Are you sure you want to delete stack '{stackName}' and all its flashcards? (y/n): ");
+                    string confirmation = Console.ReadLine();
+
+                    if (confirmation.Trim().ToLower() == "y")
+                    {
+                        databaseManager.DeleteStack(stack.Id);
+                        Console.WriteLine($"\nStack '{stackName}' and all its flashcards deleted successfully!");
+                    }
+                    else
+                        Console.WriteLine("\nDeletion cancelled.");
+                }
+            }
+
+            Console.WriteLine("\nPress Enter to return to the main menu...");
+            Console.ReadLine();
+        }
+
         private void DeleteFlashcards()
         {
             Console.Clear();
@@ -194,7 +232,7 @@ namespace Flashcards
         {
             if (GetStacks() > 0)
             {
-                Console.WriteLine("\nEnter the stack ID to view flashcards (Press 0 to return to the main menu):");
+                Console.WriteLine("\nEnter the stack name to view flashcards (Press 0 to return to the main menu):");
                 string stackName = Console.ReadLine();
 
                 if (stackName == "0") return;
