@@ -9,7 +9,10 @@
             Console.OutputEncoding = System.Text.Encoding.UTF8;
 
             DatabaseManager databaseManager = new DatabaseManager();
+            UserInterface userInterface = new UserInterface();
+
             databaseManager.CreateTable();
+            userInterface.MainMenu();
         }
     }
 }
