@@ -89,7 +89,7 @@ namespace Flashcards
             Console.Clear();
             Console.WriteLine("---Create a new Stack---");
 
-            Console.WriteLine("Enter the name of the new stack (Press 0 to return to the main menu): ");
+            Console.WriteLine("Enter the name of the new stack (Press 0 to return to the manage stacks menu): ");
             string name = Console.ReadLine();
 
             if (name == "0") return;
@@ -116,7 +116,7 @@ namespace Flashcards
                 CreateStack();
             else
             {
-                Console.WriteLine("\nPress Enter to return to the main menu...");
+                Console.WriteLine("\nPress Enter to return to the manage stacks menu...");
                 Console.ReadLine();
             }
         }
@@ -128,18 +128,13 @@ namespace Flashcards
 
             if (GetStacks() > 0)
             {
-                Console.WriteLine("\nEnter the stack name to delete (Press 0 to return to the main menu):");
+                Console.WriteLine("\nEnter the stack name to delete (Press 0 to return to the manage stacks menu):");
                 string stackName = Console.ReadLine();
 
                 if (stackName == "0") return;
 
-                var stack = stacks.FirstOrDefault(s => s.Name.Equals(stackName, StringComparison.OrdinalIgnoreCase));
-
-                if (stack == null)
-                {
-                    Console.WriteLine($"\nStack '{stackName}' does not exist. Please try again.");
-                }
-                else
+                Stack stack = GetStackByName(stackName);
+                if (stack != null)
                 {
                     Console.WriteLine($"\nAre you sure you want to delete stack '{stackName}' and all its flashcards? (y/n): ");
                     string confirmation = Console.ReadLine();
@@ -152,15 +147,20 @@ namespace Flashcards
                     else
                         Console.WriteLine("\nDeletion cancelled.");
                 }
-            }
 
-            Console.WriteLine("\nWould you like to delete another stack? (y/n): ");
-            string input = Console.ReadLine();
-            if (!string.IsNullOrWhiteSpace(input) && input.ToLower() == "y")
-                DeleteStack();
+                Console.WriteLine("\nWould you like to delete another stack? (y/n): ");
+                string input = Console.ReadLine();
+                if (!string.IsNullOrWhiteSpace(input) && input.ToLower() == "y")
+                    DeleteStack();
+                else
+                {
+                    Console.WriteLine("\nPress Enter to return to the manage stack menu...");
+                    Console.ReadLine();
+                }
+            }
             else
             {
-                Console.WriteLine("\nPress Enter to return to the main menu...");
+                Console.WriteLine("\nPress Enter to return to the manage stack menu...");
                 Console.ReadLine();
             }
         }
@@ -171,9 +171,7 @@ namespace Flashcards
             stacks = databaseManager.GetStacks();
 
             if (stacks.Count == 0)
-            {
                 Console.WriteLine("No stacks found. Please create a stack first.");
-            }
             else
             {
                 foreach (var stack in stacks)
@@ -185,6 +183,15 @@ namespace Flashcards
             return stacks.Count;
         }
 
+        private Stack GetStackByName(string stackName)
+        {
+            var stack = stacks.FirstOrDefault(s => s.Name.Equals(stackName, StringComparison.OrdinalIgnoreCase));
+
+            if (stack == null)
+                Console.WriteLine($"\nStack '{stackName}' does not exist. Please try again.");
+
+            return stack;
+        }
         private void ViewFlashcards()
         {
             Console.Clear();
