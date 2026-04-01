@@ -12,7 +12,7 @@
             UserInterface userInterface = new UserInterface();
 
             databaseManager.CreateTable();
-            userInterface.MainMenu();
+            userInterface.MainMenu(databaseManager);
         }
     }
 }
