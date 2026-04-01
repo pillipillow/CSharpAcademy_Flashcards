@@ -202,7 +202,7 @@ namespace Flashcards
 
             if (GetStacks() > 0)
             {
-                Console.WriteLine("\nEnter the stack name to delete (Press 0 to return to the main menu):");
+                Console.WriteLine("\nEnter the stack name to manage (Press 0 to return to the main menu):");
                 string stackName = Console.ReadLine();
 
                 if (stackName == "0") return;
@@ -230,7 +230,8 @@ namespace Flashcards
                     Console.WriteLine($"---Manage Flashcards for Stack: {currentStack.Name}---");
                     Console.WriteLine("1 - View flashcards");
                     Console.WriteLine("2 - Create flashcards");
-                    Console.WriteLine("3 - Delete flashcards");
+                    Console.WriteLine("3 - Update flashcards");
+                    Console.WriteLine("4 - Delete flashcards");
                     Console.WriteLine("0 - Return to main menu");
                     Console.Write("Please select an option: ");
 
@@ -248,6 +249,9 @@ namespace Flashcards
                             CreateFlashcards(currentStack);
                             break;
                         case "3":
+                            UpdateFlashcards(currentStack);
+                            break;
+                        case "4":
                             DeleteFlashcards(currentStack);
                             break;
                         default:
@@ -298,7 +302,57 @@ namespace Flashcards
             }
         }
 
-        
+        private void UpdateFlashcards(Stack stack)
+        {
+            Console.Clear();
+            Console.WriteLine("---Update flashcards---");
+            GetFlashcards(stack);
+            if (flashcards.Count > 0)
+            {
+                Console.WriteLine("\nEnter the flashcard id to update: ");
+                int flashcardDisplayId = helpers.CheckIntInput();
+
+                if (flashcardDisplayId == 0) return;
+
+                var flashcard = flashcards.FirstOrDefault(f => f.DisplayId == flashcardDisplayId);
+
+                if (flashcard == null)
+                    Console.WriteLine($"Flashcard with ID '{flashcardDisplayId}' does not exist. Please try again.");
+                else
+                {
+                    Console.WriteLine($"\nCurrent question: {flashcard.Question}");
+                    Console.WriteLine("Enter the new question for the flashcard (Press Enter to keep the current question): ");
+                    string newQuestion = Console.ReadLine();
+                    if(!string.IsNullOrWhiteSpace(newQuestion))
+                        flashcard.Question = newQuestion;
+
+                    Console.WriteLine($"\nCurrent answer: {flashcard.Answer}");
+                    Console.WriteLine("Enter the new answer for the flashcard (Press Enter to keep the current answer): ");
+                    string newAnswer = Console.ReadLine();
+                    if (!string.IsNullOrWhiteSpace(newAnswer))
+                        flashcard.Answer = newAnswer;
+
+                    databaseManager.UpdateFlashcard(flashcard.Id, flashcard.Question, flashcard.Answer);
+                    Console.WriteLine($"\nFlashcard with ID '{flashcardDisplayId}' updated successfully!");
+                }
+
+                Console.WriteLine("\nWould you like to update another flashcard? (y/n): ");
+                string input = Console.ReadLine();
+                if (!string.IsNullOrWhiteSpace(input) && input.ToLower() == "y")
+                    UpdateFlashcards(stack);
+                else
+                {
+                    Console.WriteLine("\nPress Enter to return to the manage flashcard menu...");
+                    Console.ReadLine();
+                }
+            }
+            else
+            {                 
+                Console.WriteLine("\nPress Enter to return to the manage flashcard menu...");
+                Console.ReadLine();
+            }
+        }
+
 
         private void DeleteFlashcards(Stack stack)
         {

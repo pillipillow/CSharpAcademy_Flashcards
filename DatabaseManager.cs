@@ -116,6 +116,15 @@ namespace Flashcards
             }
         }
 
+        internal void UpdateFlashcard(int flashcardId, string question, string answer)
+        {
+            using (var connection = new SqlConnection(GetConnectionString()))
+            {
+                var sql = "UPDATE Flashcards SET Question = @Question, Answer = @Answer WHERE Id = @Id";
+                connection.Execute(sql, new { Id = flashcardId, Question = question, Answer = answer });
+            }
+        }
+
         internal void DeleteFlashcard(int flashcardId)
         {
             using (var connection = new SqlConnection(GetConnectionString()))
