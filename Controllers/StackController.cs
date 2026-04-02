@@ -113,6 +113,7 @@ namespace Flashcards.Controllers
 
         internal Stack GetStackByName(string stackName)
         {
+            // Use case-insensitive comparison to find the stack by name
             var stack = stacks.FirstOrDefault(s => s.Name.Equals(stackName, StringComparison.OrdinalIgnoreCase));
 
             if (stack == null)

@@ -7,11 +7,13 @@ namespace Flashcards
     {
         StackController stackController = null;
         FlashcardController flashcardController = null;
+        StudySessionController studySessionController = null;
 
         internal void MainMenu(DatabaseManager databaseManager)
         {
             stackController = new StackController(databaseManager);
             flashcardController = new FlashcardController(databaseManager);
+            studySessionController = new StudySessionController(databaseManager, stackController);
 
             bool isCloseApp = false;
 
@@ -39,6 +41,7 @@ namespace Flashcards
                         ManageFlashcards();
                         break;
                     case "3":
+                        StudySession();
                         break;
                     default:
                         Console.WriteLine("Invalid option. Please try again.");
@@ -154,6 +157,39 @@ namespace Flashcards
                 }
 
             }
-        }  
+        }
+
+        private void StudySession()
+        {
+            bool isCloseStudySession = false;
+
+            while (!isCloseStudySession)
+            {
+                Console.Clear();
+                Console.WriteLine("---Study Room---");
+                Console.WriteLine("1 - Start a study session");
+                Console.WriteLine("2 - View study session records");
+                Console.WriteLine("0 - Return to main menu");
+                Console.Write("Please select an option: ");
+
+                string input = Console.ReadLine();
+
+                switch (input)
+                {
+                    case "0":
+                        isCloseStudySession = true;
+                        break;
+                    case "1":
+                        studySessionController.PrepareStudySession();
+                        break;
+                    case "2":
+                        break;
+                    default:
+                        Console.WriteLine("Invalid option. Please try again.");
+                        Console.ReadLine();
+                        break;
+                }
+            }
+        }
     }
 }

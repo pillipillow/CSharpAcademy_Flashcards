@@ -114,6 +114,7 @@ namespace Flashcards.Controllers
 
                 if (flashcardDisplayId == 0) return;
 
+                // Find the flashcard by its display ID
                 var flashcard = flashcards.FirstOrDefault(f => f.DisplayId == flashcardDisplayId);
 
                 if (flashcard == null)

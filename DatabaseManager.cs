@@ -55,6 +55,18 @@ namespace Flashcards
                                     Answer NVARCHAR(MAX) NOT NULL,
                                     FOREIGN KEY (StackId) REFERENCES Stacks(Id) ON DELETE CASCADE
                                 );
+                            END
+                            
+                            IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'StudySessions')
+                            BEGIN
+                                CREATE TABLE StudySessions(
+                                    Id INT PRIMARY KEY IDENTITY(1,1),
+                                    StackId INT NOT NULL,
+                                    Date DATETIME NOT NULL,
+                                    Score INT NOT NULL,
+                                    TotalQuestions INT NOT NULL,
+                                    FOREIGN KEY (StackId) REFERENCES Stacks(Id) ON DELETE CASCADE
+                                );
                             END";
 
                 connection.Execute(sql);
@@ -153,6 +165,15 @@ namespace Flashcards
                 
                 int count = connection.ExecuteScalar<int>(sql, new { Id = id });
                 return count > 0;
+            }
+        }
+
+        internal void CreateStudySession(int stackId, int score, int totalQuestions)
+        {
+            using (var connection = new SqlConnection(GetConnectionString()))
+            {
+                var sql = "INSERT INTO StudySessions (StackId, Date, Score, TotalQuestions) VALUES (@StackId, @Date, @Score, @TotalQuestions)";
+                connection.Execute(sql, new { StackId = stackId, Date = DateTime.Now, Score = score, TotalQuestions = totalQuestions });
             }
         }
     }
