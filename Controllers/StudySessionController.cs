@@ -8,6 +8,7 @@ namespace Flashcards.Controllers
         StackController stackController;
 
         List<FlashcardDto> flashcards = new List<FlashcardDto>();
+        List<StudySession> studySessions = new List<StudySession>();
         int score = 0;
 
         public StudySessionController(DatabaseManager databaseManager, StackController stackController) 
@@ -48,7 +49,7 @@ namespace Flashcards.Controllers
                 }
             }
 
-            Console.WriteLine("\nPress Enter to return to the main menu...");
+            Console.WriteLine("\nPress Enter to return to the study session menu...");
             Console.ReadLine();
         }
 
@@ -92,6 +93,30 @@ namespace Flashcards.Controllers
 
         }
 
+        internal void StudySessionRecords()
+        { 
+            studySessions.Clear();
+            studySessions = databaseManager.GetStudySessions();
+
+            Console.Clear();
+            Console.WriteLine("---Study Session Records---");
+            Console.WriteLine("{0,-20} {1,-15} {2,-10} {3,-10}","Date" ,"Stack" ,"Score" ,"Result");
+
+            foreach(var session in studySessions)
+            {
+                double percent = ((double)session.Score / session.TotalQuestions) * 100;
+
+                Console.WriteLine("{0,-20} {1,-15} {2,-10} {3,-10}",
+                                    session.Date.ToString("yyyy-MM-dd HH:mm"),
+                                    session.StackName,
+                                    $"{session.Score}/{session.TotalQuestions}",
+                                    $"{percent:0}%");
+            
+            }
+
+            Console.WriteLine("\nPress Enter to return to the study session menu...");
+            Console.ReadLine();
+        }
 
     }
 }

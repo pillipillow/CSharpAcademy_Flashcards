@@ -183,6 +183,7 @@ namespace Flashcards
                         studySessionController.PrepareStudySession();
                         break;
                     case "2":
+                        studySessionController.StudySessionRecords();
                         break;
                     default:
                         Console.WriteLine("Invalid option. Please try again.");

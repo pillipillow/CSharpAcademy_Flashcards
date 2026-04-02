@@ -166,10 +166,10 @@ namespace Flashcards.Controllers
             }
             else
             {
-                Console.WriteLine(string.Format("{0,-7} {1,-15} {2,-15}", "ID", "Question", "Answer"));
+                Console.WriteLine("{0,-7} {1,-15} {2,-15}", "ID", "Question", "Answer");
                 foreach (var flashcard in flashcards)
                 {
-                    Console.WriteLine(string.Format("{0,-7} {1,-15} {2,-15}", flashcard.DisplayId, flashcard.Question, flashcard.Answer));
+                    Console.WriteLine("{0,-7} {1,-15} {2,-15}", flashcard.DisplayId, flashcard.Question, flashcard.Answer);
 
                 }
             }

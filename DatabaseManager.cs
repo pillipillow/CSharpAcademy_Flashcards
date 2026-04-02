@@ -176,5 +176,21 @@ namespace Flashcards
                 connection.Execute(sql, new { StackId = stackId, Date = DateTime.Now, Score = score, TotalQuestions = totalQuestions });
             }
         }
+
+        internal List<StudySession> GetStudySessions()
+        {
+            using (var connection = new SqlConnection(GetConnectionString()))
+            {
+                var sql = @"SELECT
+                                Stacks.Name AS StackName,
+                                StudySessions.Date,
+                                StudySessions.Score,
+                                StudySessions.TotalQuestions
+                            FROM StudySessions JOIN Stacks ON StudySessions.StackId = Stacks.Id";
+
+                return connection.Query<StudySession>(sql).ToList();
+            }
+
+        }
     }
 }
