@@ -94,24 +94,32 @@ namespace Flashcards.Controllers
         }
 
         internal void StudySessionRecords()
-        { 
+        {
             studySessions.Clear();
             studySessions = databaseManager.GetStudySessions();
 
             Console.Clear();
             Console.WriteLine("---Study Session Records---");
-            Console.WriteLine("{0,-20} {1,-15} {2,-10} {3,-10}","Date" ,"Stack" ,"Score" ,"Result");
-
-            foreach(var session in studySessions)
+            if (studySessions.Count <= 0)
             {
-                double percent = ((double)session.Score / session.TotalQuestions) * 100;
+                Console.WriteLine("No study sessions recorded");
+            }
+            else
+            {
+                Console.WriteLine("{0,-20} {1,-15} {2,-10} {3,-10}", "Date", "Stack", "Score", "Result");
 
-                Console.WriteLine("{0,-20} {1,-15} {2,-10} {3,-10}",
-                                    session.Date.ToString("yyyy-MM-dd HH:mm"),
-                                    session.StackName,
-                                    $"{session.Score}/{session.TotalQuestions}",
-                                    $"{percent:0}%");
-            
+                foreach (var session in studySessions)
+                {
+                    double percent = ((double)session.Score / session.TotalQuestions) * 100;
+
+                    Console.WriteLine("{0,-20} {1,-15} {2,-10} {3,-10}",
+                                        session.Date.ToString("yyyy-MM-dd HH:mm"),
+                                        session.StackName,
+                                        $"{session.Score}/{session.TotalQuestions}",
+                                        $"{percent:0}%");
+
+                }
+
             }
 
             Console.WriteLine("\nPress Enter to return to the study session menu...");
